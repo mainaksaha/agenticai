@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dynamic Agentic AI Pattern Decision Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+      background-color: #f4f4f4;
+    }
+    h1, h2, h3 {
+      text-align: center;
+    }
+    .question {
+      margin: 20px 0;
+      padding: 10px;
+      background: #f7f7f7;
+      border: 1px solid #ddd;
+    }
+    label {
+      font-weight: bold;
+    }
+    select, button {
+      padding: 8px;
+      font-size: 1em;
+      margin-top: 5px;
+    }
+    .explanation {
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 5px;
+    }
+    #result {
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 8px;
+    }
+    .rec {
+      margin: 15px 0;
+      padding: 15px;
+      border-left: 5px solid #007BFF;
+      background: #e9f4ff;
+      border-radius: 4px;
+    }
+    .rec h3 {
+      margin-top: 0;
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Agentic AI Pattern Decision Tool</h1>
+  <p>This interactive questionnaire will help you determine the best agentic AI pattern for your financial project. Please answer the questions below. Explanatory text is provided for each option.</p>
+
+  <form id="decisionForm">
+    <!-- Step 1: Task Complexity -->
+    <div class="question">
+      <label for="complexity">1. What is the complexity of your task?</label>
+      <select id="complexity" name="complexity" required>
+        <option value="">--Select an option--</option>
+        <option value="simple">Simple (Single-Step Task)</option>
+        <option value="iterative">Iterative / Multi-Turn</option>
+        <option value="multistep">Multi-Step Workflow</option>
+        <option value="autonomous">Highly Autonomous / Open-Ended</option>
+      </select>
+      <div class="explanation">
+        <em>Simple:</em> Tasks with a clear, single-step answer.<br>
+        <em>Iterative:</em> Tasks requiring back-and-forth refinement.<br>
+        <em>Multi-Step:</em> Tasks involving several sequential actions.<br>
+        <em>Highly Autonomous:</em> Open-ended tasks that require self-directed planning.
+      </div>
+    </div>
+
+    <!-- Step 2: Autonomy Requirements -->
+    <div class="question">
+      <label for="autonomy">2. What is your autonomy requirement?</label>
+      <select id="autonomy" name="autonomy" required>
+        <option value="">--Select an option--</option>
+        <option value="low">Human-in-the-loop (Low Autonomy)</option>
+        <option value="high">Fully Autonomous (High Autonomy)</option>
+      </select>
+      <div class="explanation">
+        <em>Low Autonomy:</em> Requires human oversight for decisions.<br>
+        <em>High Autonomy:</em> Operates independently with minimal oversight.
+      </div>
+    </div>
+
+    <!-- Step 3: Tool Dependencies -->
+    <div class="question">
+      <label for="tools">3. Do you require external tool integration?</label>
+      <select id="tools" name="tools" required>
+        <option value="">--Select an option--</option>
+        <option value="none">No External Tools Needed</option>
+        <option value="required">External Tools / APIs Required</option>
+      </select>
+      <div class="explanation">
+        <em>No External Tools Needed:</em> The agent works only with internal data.<br>
+        <em>External Tools Required:</em> The agent must call APIs, access databases, or fetch live data.
+      </div>
+    </div>
+
+    <!-- Step 4: Memory Needs -->
+    <div class="question">
+      <label for="memory">4. What are your memory needs?</label>
+      <select id="memory" name="memory" required>
+        <option value="">--Select an option--</option>
+        <option value="stateless">No Memory (Stateless)</option>
+        <option value="short">Short-Term Memory (Session Context)</option>
+        <option value="long">Long-Term Memory (Persistent Knowledge)</option>
+      </select>
+      <div class="explanation">
+        <em>Stateless:</em> Each query is independent.<br>
+        <em>Short-Term Memory:</em> Retains context during a session.<br>
+        <em>Long-Term Memory:</em> Retains context across sessions for personalized tasks.
+      </div>
+    </div>
+
+    <!-- Step 5: Error Handling & Self-Correction -->
+    <div class="question">
+      <label for="error">5. How critical is error handling & self-correction?</label>
+      <select id="error" name="error" required>
+        <option value="">--Select an option--</option>
+        <option value="basic">Basic Error Handling is Enough</option>
+        <option value="self-correct">Self-Reflective & Corrective Agent Required</option>
+      </select>
+      <div class="explanation">
+        <em>Basic:</em> Occasional errors can be handled manually.<br>
+        <em>Self-Correct:</em> The agent must automatically check and correct its work.
+      </div>
+    </div>
+
+    <!-- Step 6: Multi-Agent Collaboration -->
+    <div class="question">
+      <label for="collaboration">6. Does your problem require collaboration among specialized agents?</label>
+      <select id="collaboration" name="collaboration" required>
+        <option value="">--Select an option--</option>
+        <option value="single">Single Agent is Enough</option>
+        <option value="multi">Multiple Specialized Agents Needed</option>
+      </select>
+      <div class="explanation">
+        <em>Single Agent:</em> One agent handles the task.<br>
+        <em>Multiple Agents:</em> Different aspects require specialized agents working together.
+      </div>
+    </div>
+
+    <!-- Step 7: Financial Industry Constraints -->
+    <div class="question">
+      <label for="compliance">7. How strict are your financial compliance & auditability requirements?</label>
+      <select id="compliance" name="compliance" required>
+        <option value="">--Select an option--</option>
+        <option value="standard">Standard Compliance</option>
+        <option value="strict">Strict (High Interpretability & Traceability)</option>
+      </select>
+      <div class="explanation">
+        <em>Standard:</em> Normal regulatory requirements.<br>
+        <em>Strict:</em> Requires extensive audit trails and human oversight.
+      </div>
+    </div>
+
+    <button type="button" onclick="getRecommendation()">Get Recommendation</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    function getRecommendation() {
+      // Read values from the form
+      const complexity = document.getElementById('complexity').value;
+      const autonomy = document.getElementById('autonomy').value;
+      const tools = document.getElementById('tools').value;
+      const memory = document.getElementById('memory').value;
+      const errorHandling = document.getElementById('error').value;
+      const collaboration = document.getElementById('collaboration').value;
+      const compliance = document.getElementById('compliance').value;
+
+      // Create a score object for each agentic pattern.
+      let scores = {
+        "Chain-of-Thought (CoT)": 0,
+        "ReAct (Reason + Act)": 0,
+        "Reflexion": 0,
+        "Tool-Using Agent": 0,
+        "Auto-GPT": 0,
+        "Multi-Agent Collaboration": 0
+      };
+
+      // Step 1: Task Complexity
+      if (complexity === "simple") {
+        scores["Chain-of-Thought (CoT)"] += 3;
+        scores["ReAct (Reason + Act)"] += 2;
+      } else if (complexity === "iterative") {
+        scores["ReAct (Reason + Act)"] += 3;
+        scores["Reflexion"] += 2;
+      } else if (complexity === "multistep") {
+        scores["Auto-GPT"] += 3;
+        scores["ReAct (Reason + Act)"] += 2;
+      } else if (complexity === "autonomous") {
+        scores["Auto-GPT"] += 4;
+        scores["Multi-Agent Collaboration"] += 2;
+      }
+
+      // Step 2: Autonomy Requirements
+      if (autonomy === "low") {
+        scores["Chain-of-Thought (CoT)"] += 2;
+        scores["Tool-Using Agent"] += 2;
+      } else if (autonomy === "high") {
+        scores["Auto-GPT"] += 3;
+        scores["Multi-Agent Collaboration"] += 2;
+      }
+
+      // Step 3: Tool Dependencies
+      if (tools === "none") {
+        scores["Chain-of-Thought (CoT)"] += 3;
+      } else if (tools === "required") {
+        scores["ReAct (Reason + Act)"] += 2;
+        scores["Tool-Using Agent"] += 3;
+        scores["Auto-GPT"] += 2;
+      }
+
+      // Step 4: Memory Needs
+      if (memory === "stateless") {
+        scores["Chain-of-Thought (CoT)"] += 2;
+      } else if (memory === "short") {
+        scores["ReAct (Reason + Act)"] += 2;
+        scores["Tool-Using Agent"] += 1;
+      } else if (memory === "long") {
+        scores["Auto-GPT"] += 3;
+        scores["Multi-Agent Collaboration"] += 1;
+      }
+
+      // Step 5: Error Handling & Self-Correction
+      if (errorHandling === "basic") {
+        scores["Chain-of-Thought (CoT)"] += 1;
+      } else if (errorHandling === "self-correct") {
+        scores["Reflexion"] += 3;
+        scores["Auto-GPT"] += 1;
+      }
+
+      // Step 6: Multi-Agent Collaboration
+      if (collaboration === "single") {
+        scores["Chain-of-Thought (CoT)"] += 1;
+        scores["ReAct (Reason + Act)"] += 1;
+        scores["Reflexion"] += 1;
+        scores["Tool-Using Agent"] += 1;
+        scores["Auto-GPT"] += 1;
+      } else if (collaboration === "multi") {
+        scores["Multi-Agent Collaboration"] += 4;
+      }
+
+      // Step 7: Financial Industry Constraints
+      if (compliance === "standard") {
+        scores["Chain-of-Thought (CoT)"] += 1;
+        scores["Tool-Using Agent"] += 1;
+      } else if (compliance === "strict") {
+        scores["Chain-of-Thought (CoT)"] += 2;
+        scores["Reflexion"] += 1;
+        scores["Multi-Agent Collaboration"] += 1;
+      }
+
+      // Convert scores object to an array and sort by score descending
+      let sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+
+      // Get top two recommendations
+      let topTwo = sorted.slice(0, 2);
+
+      // Explanation mapping for each pattern
+      const explanations = {
+        "Chain-of-Thought (CoT)": "Best for simple, well-defined queries where the agent explains its reasoning in one pass.",
+        "ReAct (Reason + Act)": "Ideal for tasks requiring iterative reasoning with external tool calls for validation. It interleaves thought and action in short cycles.",
+        "Reflexion": "Use when self-correction is critical, such as in code generation or error-sensitive tasks, where the agent refines its output.",
+        "Tool-Using Agent": "Optimal when the application needs to integrate external APIs or databases to fetch live data.",
+        "Auto-GPT": "Suited for complex, multi-step or open-ended tasks that require autonomous planning, execution, and long-term memory.",
+        "Multi-Agent Collaboration": "Best when the problem requires multiple specialized agents working together, each handling a distinct aspect of the task."
+      };
+
+      // Build dynamic output with top two recommendations and their explanations
+      let resultStr = "<h2>Top Two Recommended Agentic AI Patterns</h2>";
+      topTwo.forEach(([pattern, score], index) => {
+        resultStr += `<div class="rec">
+                        <h3>${index+1}. ${pattern} (Score: ${score})</h3>
+                        <p>${explanations[pattern]}</p>
+                      </div>`;
+      });
+
+      document.getElementById("result").innerHTML = resultStr;
+    }
+  </script>
+
+</body>
+</html>
