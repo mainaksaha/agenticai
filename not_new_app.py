@@ -1,18 +1,15 @@
-"""notification_app.py – Prompt Subscription App (multi‑channel + tool‑tips)
+"""prompt_pulse.py – PromptPulse (multi-channel + tool-tips)
 
 Streamlit UI where users subscribe prompts, pick **multiple** notification
-channels (Web, Teams, Email), and see icon + label pairs with tool‑tips on the
+channels (Web, Teams, Email), and see icon + label pairs with tool-tips on the
 schedule board.
 
-Changes in this version
------------------------
-* **Icons now include text labels** (e.g., 🌐 Web) and HTML `title` attributes
-  so hovering shows the channel name.
-* Notifications and schedule lines use the same icon‑label markup.
+• Top-left title now reads **📈 PromptPulse** (pulse graph icon).
+• Internal `page_title` set to *PromptPulse* so the browser tab matches.
 
 Run with:
 
-    streamlit run notification_app.py
+    streamlit run prompt_pulse.py
 """
 
 from __future__ import annotations
@@ -31,9 +28,9 @@ RUN_INTERVAL: timedelta = timedelta(seconds=30)  # how often prompts fire
 CHANNEL_OPTIONS: List[str] = ["Web", "Teams", "Email"]
 CHANNEL_ICONS: Dict[str, str] = {"Web": "🌐", "Teams": "💬", "Email": "📧"}
 
-# HTML snippet with tooltip + label (e.g. <span title="Web">🌐 Web</span>)
+# HTML snippet with tooltip + label (e.g. <span title="Web">🌐 Web</span>)
 CHANNEL_HTML: Dict[str, str] = {
-    ch: f"<span title='{ch}'>{icon} {ch}</span>" for ch, icon in CHANNEL_ICONS.items()
+    ch: f"<span title='{ch}'>{icon} {ch}</span>" for ch, icon in CHANNEL_ICONS.items()
 }
 
 PRE_SAVED_PROMPTS: List[dict] = [
@@ -135,7 +132,7 @@ def _toggle_bell() -> None:
 def _top_bar() -> None:
     col_title, col_bell = st.columns([0.94, 0.06])
     with col_title:
-        st.markdown("## 📝 Prompt Pulse")
+        st.markdown("## 📈 PromptPulse")
     with col_bell:
         bell_label = "🔔" if not st.session_state.new_notif else "🔔 (new)"
         st.button(bell_label, key="bell", on_click=_toggle_bell)
@@ -166,7 +163,6 @@ def _main_pane() -> None:
 
     st.divider()
 
-    # Input widgets
     st.multiselect(
         "Notification channels",
         options=CHANNEL_OPTIONS,
@@ -185,7 +181,7 @@ def _main_pane() -> None:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _build_ui() -> None:
-    st.set_page_config(page_title="Prompt Subscription App", layout="wide")
+    st.set_page_config(page_title="PromptPulse", layout="wide")
     _initialise_state()
     _maybe_run_prompts()
 
