@@ -6,7 +6,7 @@ from agents.mcp import MCPServerSse
 from agents.model_settings import ModelSettings
 from agents.handoffs import Handoff
 
-os.environ["OPENAI_API_KEY"] = 
+os.environ["OPENAI_API_KEY"] = ''
 
 # Ensure OPENAI_API_KEY is set
 if "OPENAI_API_KEY" not in os.environ:
@@ -23,31 +23,31 @@ async def run_queries(fin_server, util_server, model_server, party_server):
     # Create one agent per MCP server
     fin_agent = Agent(
         name="FinancialAgent",
-        instructions="Handle position, orders, tax lots, and activities queries. If you are not able to fetch the answer or perform the task,  DO NOT try to make answer, say I dont' know",
+        instructions="Handle position, orders, tax lots, and activities queries. ",
         mcp_servers=[fin_server],
         model_settings=ModelSettings(tool_choice="required"),
     )
     util_agent = Agent(
         name="UtilitiesAgent",
-        instructions="Handle email, summarize, translation, note aggregation, and meeting management.If you are not able to fetch the answer or perform the task,  DO NOT try to make answer, say I dont' know",
+        instructions="Handle email, summarize, translation, note aggregation, and meeting management.",
         mcp_servers=[util_server],
         model_settings=ModelSettings(tool_choice="required"),
     )
     model_agent = Agent(
         name="ModelPortfolioAgent",
-        instructions="Handle model creation, retrieval, assignment, and drift evaluation.If you are not able to fetch the answer or perform the task,  DO NOT try to make answer, say I dont' know",
+        instructions="Handle model creation, retrieval, assignment, and drift evaluation.",
         mcp_servers=[model_server],
         model_settings=ModelSettings(tool_choice="required"),
     )
     party_agent = Agent(
         name="PartyAgent",
-        instructions="Handle client search, address updates, details retrieval, and household updates.If you are not able to fetch the answer or perform the task,  DO NOT try to make answer, say I dont' know",
+        instructions="Handle client search, address updates, details retrieval, and household updates.",
         mcp_servers=[party_server],
         model_settings=ModelSettings(tool_choice="required"),
     )
     research_agent = Agent(
         name="ResearchAgent",
-        instructions="Handle wealth management research outlook queries (WealthOutlook tool).If you are not able to fetch the answer or perform the task,  DO NOT try to make answer, say I dont' know",
+        instructions="Handle wealth management research outlook queries (WealthOutlook tool).",
         mcp_servers=[util_server],  # WealthOutlook tool lives on financial server
         model_settings=ModelSettings(tool_choice="required"),
     )
