@@ -1,0 +1,14 @@
+[[worker]]
+
+[worker.config]
+id = "misc-worker"
+enabled = true
+timeout = 30
+retries = 3
+secret = "31ee784e48d7d824a2e2fdd64d40f09cmainak"
+
+[worker.pypi_source]
+packages = ["slack_sdk"]
+
+[worker.local_source]
+packages = [ "./arithmetic",]
