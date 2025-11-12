@@ -1,0 +1,8 @@
+C:\Work\agenticai\MCPServerSample\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Work\agenticai\MCPServerSample\obj\Debug\net8.0\MCPServerSample.GeneratedMSBuildEditorConfig.editorconfig
+C:\Work\agenticai\MCPServerSample\obj\Debug\net8.0\MCPServerSample.AssemblyInfoInputs.cache
+C:\Work\agenticai\MCPServerSample\obj\Debug\net8.0\MCPServerSample.AssemblyInfo.cs
+C:\Work\agenticai\MCPServerSample\obj\Debug\net8.0\MCPServerSample.csproj.CoreCompileInputs.cache
+C:\Work\agenticai\MCPServerSample\obj\Debug\net8.0\MCPServerSample.MvcApplicationPartsAssemblyInfo.cache
+C:\Work\agenticai\MCPServerSample\obj\Debug\net8.0\MCPServerSample.sourcelink.json
+C:\Work\agenticai\MCPServerSample\obj\Debug\net8.0\MCPServerSample.csproj.AssemblyReference.cache

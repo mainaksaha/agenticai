@@ -1,0 +1,5 @@
+C:\Work\agenticai\MCPServer\obj\Debug\net8.0\MCPServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Work\agenticai\MCPServer\obj\Debug\net8.0\MCPServer.AssemblyInfoInputs.cache
+C:\Work\agenticai\MCPServer\obj\Debug\net8.0\MCPServer.AssemblyInfo.cs
+C:\Work\agenticai\MCPServer\obj\Debug\net8.0\MCPServer.csproj.CoreCompileInputs.cache
+C:\Work\agenticai\MCPServer\obj\Debug\net8.0\MCPServer.sourcelink.json

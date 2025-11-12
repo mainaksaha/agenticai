@@ -1,0 +1,96 @@
+# ADK Orchestrator Requirements
+# Fresh environment for Google ADK implementation
+
+# ============================================
+# Core Python Dependencies
+# ============================================
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# ============================================
+# LLM / AI SDKs
+# ============================================
+# OpenAI for LLM calls
+openai>=1.0.0
+
+# Google ADK (Agent Development Kit) - Official
+# Note: This is a preview/beta SDK from Google
+# Install when available: pip install google-adk
+# google-adk>=0.1.0
+
+# ============================================
+# A2A Protocol (Agent-to-Agent Communication)
+# ============================================
+# Official A2A Protocol SDK
+# Note: This is a preview/beta SDK
+# Install when available: pip install a2a-python
+# a2a-python>=0.1.0
+
+# ============================================
+# LangGraph (Orchestration)
+# ============================================
+# LangGraph for StateGraph-based orchestration
+langgraph>=0.2.0
+langchain>=0.1.0
+langchain-core>=0.1.0
+
+# ============================================
+# Web Framework (UI)
+# ============================================
+streamlit>=1.30.0
+plotly>=5.18.0
+
+# ============================================
+# HTTP & API
+# ============================================
+requests>=2.31.0
+httpx>=0.25.0
+fastapi>=0.104.0
+uvicorn>=0.24.0
+
+# ============================================
+# Data Processing
+# ============================================
+pandas>=2.0.0
+numpy>=1.24.0
+
+# ============================================
+# Utilities
+# ============================================
+python-dateutil>=2.8.2
+pytz>=2023.3
+
+# ============================================
+# Development & Testing (Optional)
+# ============================================
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# ============================================
+# Notes for Installation
+# ============================================
+# 
+# STEP 1: Create conda environment
+#   conda create -n py311_gadk python=3.11
+#   conda activate py311_gadk
+#
+# STEP 2: Install this requirements file
+#   cd orchestrator_adk
+#   pip install -r requirements.txt
+#
+# STEP 3: Install Google ADK SDKs (when available)
+#   pip install google-adk
+#   pip install a2a-python
+#
+# STEP 4: Verify installation
+#   python -c "import langgraph; print('LangGraph:', langgraph.__version__)"
+#   python -c "import openai; print('OpenAI:', openai.__version__)"
+#   python -c "import streamlit; print('Streamlit:', streamlit.__version__)"
+#
+# STEP 5: Run tests
+#   python test_adk.py
+#
+# STEP 6: Start UI
+#   cd ..
+#   streamlit run frontend/streamlit_app_adk.py
+#

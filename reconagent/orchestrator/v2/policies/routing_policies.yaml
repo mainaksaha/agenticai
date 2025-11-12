@@ -1,0 +1,406 @@
+# Dynamic Orchestration Routing Policies v2.0
+# Defines which agents to invoke for different break profiles
+
+# Policy format:
+# break_type:
+#   risk_tier:
+#     mandatory_agents: [list of agents that must run]
+#     optional_agents: [list of agents that may run conditionally]
+#     parallel_groups: [groups of agents that can run in parallel]
+#     decision_checkpoints: [points where we can decide early]
+#     max_parallel: max number of parallel agents
+#     early_exit_enabled: whether early exit is allowed
+
+policies:
+  
+  # Trade vs OMS Mismatches
+  TRADE_OMS_MISMATCH:
+    LOW:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+      optional_agents:
+        - MATCHING_CORRELATION
+        - PATTERN_INTELLIGENCE
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE]
+      decision_checkpoints:
+        - after_nodes: [RULES_TOLERANCE]
+          condition: "within_tolerance and confidence > 0.9"
+          action: AUTO_RESOLVE
+      max_parallel: 2
+      early_exit_enabled: true
+    
+    MEDIUM:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - MATCHING_CORRELATION
+        - RULES_TOLERANCE
+      optional_agents:
+        - PATTERN_INTELLIGENCE
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [MATCHING_CORRELATION, RULES_TOLERANCE]
+      decision_checkpoints:
+        - after_nodes: [RULES_TOLERANCE]
+          condition: "within_tolerance and confidence > 0.85"
+          action: AUTO_RESOLVE
+        - after_nodes: [MATCHING_CORRELATION, RULES_TOLERANCE]
+          condition: "match_found and within_tolerance"
+          action: AUTO_RESOLVE
+      max_parallel: 3
+      early_exit_enabled: true
+    
+    HIGH:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - MATCHING_CORRELATION
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [MATCHING_CORRELATION, RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: FOLLOW_DECISION
+      max_parallel: 3
+      early_exit_enabled: false
+    
+    CRITICAL:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - MATCHING_CORRELATION
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [MATCHING_CORRELATION, RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: ESCALATE
+      max_parallel: 3
+      early_exit_enabled: false
+  
+  # Cash Reconciliation
+  CASH_RECONCILIATION:
+    LOW:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE]
+      decision_checkpoints:
+        - after_nodes: [RULES_TOLERANCE]
+          condition: "within_rounding_tolerance"
+          action: AUTO_RESOLVE
+      max_parallel: 2
+      early_exit_enabled: true
+    
+    MEDIUM:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+      optional_agents:
+        - DECISIONING
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+      decision_checkpoints:
+        - after_nodes: [RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+          condition: "timing_lag_identified and within_extended_tolerance"
+          action: AUTO_RESOLVE
+      max_parallel: 2
+      early_exit_enabled: true
+    
+    HIGH:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: FOLLOW_DECISION
+      max_parallel: 2
+      early_exit_enabled: false
+  
+  # Broker vs Internal
+  BROKER_VS_INTERNAL:
+    LOW:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - MATCHING_CORRELATION
+        - RULES_TOLERANCE
+      optional_agents:
+        - PATTERN_INTELLIGENCE
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [MATCHING_CORRELATION, RULES_TOLERANCE]
+      decision_checkpoints:
+        - after_nodes: [MATCHING_CORRELATION, RULES_TOLERANCE]
+          condition: "match_found and within_tolerance"
+          action: AUTO_RESOLVE
+      max_parallel: 2
+      early_exit_enabled: true
+    
+    MEDIUM:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - MATCHING_CORRELATION
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+      optional_agents:
+        - DECISIONING
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [MATCHING_CORRELATION, RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+      decision_checkpoints:
+        - after_nodes: [PATTERN_INTELLIGENCE]
+          condition: "broker_fee_issue and within_tolerance"
+          action: AUTO_RESOLVE
+      max_parallel: 3
+      early_exit_enabled: true
+    
+    HIGH:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - MATCHING_CORRELATION
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [MATCHING_CORRELATION, RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: FOLLOW_DECISION
+      max_parallel: 3
+      early_exit_enabled: false
+  
+  # PnL Reconciliation
+  PNL_RECONCILIATION:
+    LOW:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+      decision_checkpoints:
+        - after_nodes: [PATTERN_INTELLIGENCE]
+          condition: "pricing_source_diff and within_tolerance"
+          action: AUTO_RESOLVE
+      max_parallel: 2
+      early_exit_enabled: true
+    
+    MEDIUM:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+      optional_agents:
+        - WORKFLOW_FEEDBACK
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: HIL_REVIEW
+      max_parallel: 2
+      early_exit_enabled: false
+    
+    HIGH:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: ESCALATE
+      max_parallel: 2
+      early_exit_enabled: false
+  
+  # Regulatory Data
+  REGULATORY_DATA:
+    LOW:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: HIL_REVIEW
+      max_parallel: 2
+      early_exit_enabled: false
+    
+    MEDIUM:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: ESCALATE
+      max_parallel: 2
+      early_exit_enabled: false
+    
+    HIGH:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: ESCALATE
+      max_parallel: 2
+      early_exit_enabled: false
+  
+  # Default policy for unknown break types
+  DEFAULT:
+    LOW:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+      optional_agents:
+        - MATCHING_CORRELATION
+        - PATTERN_INTELLIGENCE
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE]
+      decision_checkpoints:
+        - after_nodes: [RULES_TOLERANCE]
+          condition: "within_tolerance"
+          action: AUTO_RESOLVE
+      max_parallel: 2
+      early_exit_enabled: true
+    
+    MEDIUM:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - RULES_TOLERANCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents:
+        - MATCHING_CORRELATION
+        - PATTERN_INTELLIGENCE
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [RULES_TOLERANCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: FOLLOW_DECISION
+      max_parallel: 2
+      early_exit_enabled: false
+    
+    HIGH:
+      mandatory_agents:
+        - BREAK_INGESTION
+        - DATA_ENRICHMENT
+        - MATCHING_CORRELATION
+        - RULES_TOLERANCE
+        - PATTERN_INTELLIGENCE
+        - DECISIONING
+        - WORKFLOW_FEEDBACK
+      optional_agents: []
+      parallel_groups:
+        - [DATA_ENRICHMENT]
+        - [MATCHING_CORRELATION, RULES_TOLERANCE, PATTERN_INTELLIGENCE]
+        - [DECISIONING]
+        - [WORKFLOW_FEEDBACK]
+      decision_checkpoints:
+        - after_nodes: [DECISIONING]
+          condition: "always"
+          action: FOLLOW_DECISION
+      max_parallel: 3
+      early_exit_enabled: false
